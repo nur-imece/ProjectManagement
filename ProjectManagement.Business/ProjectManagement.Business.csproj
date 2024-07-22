@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>ProjectManagement.Model</RootNamespace>
+    </PropertyGroup>
+
+
+<ItemGroup>
+      <ProjectReference Include="..\ProjectManagement.Data\ProjectManagement.Data.csproj" />
+      <ProjectReference Include="..\ProjectManagement.Model\ProjectManagement.Model.csproj" />
+    </ItemGroup>
+
+</Project>
