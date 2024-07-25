@@ -1,4 +1,17 @@
+using ProjectManagement.API2.Services;
+using ProjectManagement.Model;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.Configure<BookStoreDatabaseSettings>(
+    builder.Configuration.GetSection("BookStoreDatabase")); 
+
+builder.Services.AddControllers()
+    .AddJsonOptions(
+        options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+
+builder.Services.AddSingleton<BooksService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
