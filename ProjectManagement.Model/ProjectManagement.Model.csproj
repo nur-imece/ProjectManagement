@@ -1,10 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>ProjectManagement.Model</RootNamespace>
     </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.OData" Version="9.0.0-rc.1" />
+      <PackageReference Include="Microsoft.OData.Edm" Version="8.0.0-rc.1" />
+      <PackageReference Include="Microsoft.OData.ModelBuilder" Version="1.0.9" />
+      <PackageReference Include="MongoDB.Driver" Version="2.27.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Const\" />
+    </ItemGroup>
 
 </Project>
