@@ -1,26 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>ProjectManagement.Api</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-
-            <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.0" />
-
-            <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.20" />
-
-            <PackageReference Include="MongoDB.Driver" Version="2.27.0" />
-            <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
+        <PackageReference Include="MongoDB.Bson" Version="2.28.0" />
+        <PackageReference Include="MongoDB.Driver" Version="2.28.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ProjectManagement.Business\ProjectManagement.Business.csproj" />
-      <ProjectReference Include="..\ProjectManagement.Data\ProjectManagement.Data.csproj" />
-      <ProjectReference Include="..\ProjectManagement.Model\ProjectManagement.Model.csproj" />
+        <ProjectReference Include="..\ProjectManagement.Business\ProjectManagement.Business.csproj" />
+        <ProjectReference Include="..\ProjectManagement.Data\ProjectManagement.Data.csproj" />
+        <ProjectReference Include="..\ProjectManagement.Model\ProjectManagement.Model.csproj" />
+        
     </ItemGroup>
 
 </Project>

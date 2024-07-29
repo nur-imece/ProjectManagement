@@ -1,5 +1,5 @@
 ﻿//using ProjectManagement.Data.Entities;
-using System.Threading.Tasks;
+/*using System.Threading.Tasks;
 
 namespace ProjectManagement.Model
 {
@@ -8,4 +8,4 @@ namespace ProjectManagement.Model
         Task<User> Authenticate(string username, string password);
         Task Register(User user);
     }
-}
+}*/

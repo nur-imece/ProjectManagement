@@ -1,4 +1,4 @@
-using ProjectManagement.API2.Services;
+using ProjectManagement.Api.Services;
 using ProjectManagement.Model;
 
 var builder = WebApplication.CreateBuilder(args);

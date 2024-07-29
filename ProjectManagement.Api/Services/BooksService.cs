@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using ProjectManagement.Model;
-using ProjectManagement.API2.Services;
-using MongoDB.Bson; // ObjectId için gerekli
 
-namespace ProjectManagement.API2.Services
+// ObjectId için gerekli
+
+namespace ProjectManagement.Api.Services
 {
     public class BooksService
     {
@@ -33,11 +34,14 @@ namespace ProjectManagement.API2.Services
                 return null; // veya uygun bir hata yönetimi
             }
 
-            return await _booksCollection.Find(x => x.Id == objectId).FirstOrDefaultAsync();
+            return await _booksCollection.Find(x => x.Id == objectId.ToString()).FirstOrDefaultAsync();
         }
 
-        public async Task CreateAsync(Book newBook) =>
+        public async Task CreateAsync(Book newBook)
+        {
             await _booksCollection.InsertOneAsync(newBook);
+
+        }
 
         public async Task UpdateAsync(string id, Book updatedBook)
         {
@@ -46,7 +50,7 @@ namespace ProjectManagement.API2.Services
                 return; // veya uygun bir hata yönetimi
             }
 
-            await _booksCollection.ReplaceOneAsync(x => x.Id == objectId, updatedBook);
+            await _booksCollection.ReplaceOneAsync(x => x.Id == objectId.ToString(), updatedBook);
         }
 
         public async Task RemoveAsync(string id)
@@ -56,7 +60,7 @@ namespace ProjectManagement.API2.Services
                 return; // veya uygun bir hata yönetimi
             }
 
-            await _booksCollection.DeleteOneAsync(x => x.Id == objectId);
+            await _booksCollection.DeleteOneAsync(x => x.Id == objectId.ToString());
         }
     }
 }

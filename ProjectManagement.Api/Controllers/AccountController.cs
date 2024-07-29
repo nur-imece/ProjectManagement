@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*using Microsoft.AspNetCore.Mvc;
 //using ProjectManagement.Business.Services;
 //using ProjectManagement.Data.Entities;
 using System.Threading.Tasks;
@@ -38,5 +38,5 @@ namespace ProjectManagement.API2.Controllers
             return Ok("User registered successfully");
         }
     }
-}
+}*/
 
