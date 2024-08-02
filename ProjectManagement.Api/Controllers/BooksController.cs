@@ -1,72 +1,63 @@
-﻿using ProjectManagement.Model;
-using Microsoft.AspNetCore.Mvc;
-using ProjectManagement.Api.Services;
+﻿using Microsoft.AspNetCore.Mvc;
+using ProjectManagement.Business.Services;
+using ProjectManagement.Model;
+using ProjectManagement.Model.Request;
+using ProjectManagement.Model.Respond;
 
-namespace BookStoreApi.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class BooksController : ControllerBase
+namespace ProjectManagement.Controllers
 {
-    private readonly BooksService _booksService;
-
-    public BooksController(BooksService booksService) =>
-        _booksService = booksService;
-
-    [HttpGet]
-    public async Task<List<Book>> Get() =>
-        await _booksService.GetAsync();
-
-    [HttpGet("{id:length(24)}")]
-    public async Task<ActionResult<Book>> Get(string id)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class BooksController : ControllerBase
     {
-        var book = await _booksService.GetAsync(id);
+        private readonly IBookService _booksService;
 
-        if (book is null)
+        public BooksController(IBookService booksService) =>
+            _booksService = booksService;
+
+        [HttpGet]
+        public async Task<List<BookResponse>> Get() 
+           
+            {
+                await _booksService.GetAsync().Select(book => new BookResponse)
+                return Ok();
+
+            }
+
+        [HttpGet("{id:length(24)}", Name = "GetBook")]
+        public async Task<ActionResult<BookResponse>> Get(string id)
         {
-            return NotFound();
+            await _booksService.GetAsync(id);
+
+            
+                return Ok();
         }
 
-        return book;
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Post(Book newBook)
-    {
-        await _booksService.CreateAsync(newBook);
-
-        return CreatedAtAction(nameof(Get), new { id = newBook.Id }, newBook);
-    }
-
-    [HttpPut("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, Book updatedBook)
-    {
-        var book = await _booksService.GetAsync(id);
-
-        if (book is null)
+         
+        [HttpPost]
+        public async Task<IActionResult> Post(BookCreateRequest newBookRequest)
         {
-            return NotFound();
+
+            await _booksService.CreateAsync(newBookRequest);
+
+            return CreatedAtAction(nameof(Get), new { id = newBook.Id }, newBook);
         }
 
-        updatedBook.Id = book.Id;
-
-        await _booksService.UpdateAsync(id, updatedBook);
-
-        return NoContent();
-    }
-
-    [HttpDelete("{id:length(24)}")]
-    public async Task<IActionResult> Delete(string id)
-    {
-        var book = await _booksService.GetAsync(id);
-
-        if (book is null)
+        [HttpPut("{id:length(24)}")]
+        public async Task<IActionResult> Update(string id, BookCreateRequest updatedBookRequest)
         {
-            return NotFound();
+            await _booksService.UpdateAsync(id, updatedBookRequest);
+
+            return Ok();
         }
 
-        await _booksService.RemoveAsync(id);
+        [HttpDelete("{id:length(24)}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            await _booksService.RemoveAsync(id);
 
-        return NoContent();
+            return NoContent();
+        }
     }
 }

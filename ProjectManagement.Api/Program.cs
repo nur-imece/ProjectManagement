@@ -1,25 +1,28 @@
-using ProjectManagement.Api.Services;
 using ProjectManagement.Model;
+using Microsoft.Extensions.Options;
+using ProjectManagement.Model.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.Configure<BookStoreDatabaseSettings>(
-    builder.Configuration.GetSection("BookStoreDatabase")); 
+// MongoDBSettings'i yapılandırma
+builder.Services.Configure<MongoDBSettings>(
+    builder.Configuration.GetSection("MongoDB"));
 
+// IBooksService ve BooksService kayıtları
+builder.Services.AddSingleton<IBookService, BooksService>();
+
+// Kontrollerleri ekleme ve JSON seçeneklerini yapılandırma
 builder.Services.AddControllers()
     .AddJsonOptions(
         options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
-builder.Services.AddSingleton<BooksService>();
-
-builder.Services.AddControllers();
+// Swagger hizmetlerini ekleme
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// HTTP istek hattını yapılandırma
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
