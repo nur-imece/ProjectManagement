@@ -21,68 +21,64 @@ namespace ProjectManagement.Model.Services
                 mongoDbSettings.Value.BooksCollectionName);
         }
 
-
-
-        public async  Task<List<BookResponse>> GetAsync()
+        public async Task<List<BookResponse>> GetAsync()
         {
-            var book = await GetAsync();
-            if (book is null)
-            {
-                return;
-            }
-            await _booksCollection.Find(_ => true).ToListAsync();
-
+            var result = await _booksCollection.Find(_ => true).ToListAsync();
+            return result.Select(book => new BookResponse
+            { 
+                Name = book.BookName,
+                Author = book.Author,
+                Category = book.Category,
+                Price = book.Price
+               
+            }).ToList();
         }
 
-        public async  Task<BookResponse?> GetAsync(string id)
+        public async Task<BookResponse?> GetAsync(string id)
         {
-            var book = await GetAsync(id);
+            var book = await _booksCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
             if (book is null)
             {
-                return;
+                return null;
             }
-            await _booksCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            return new BookResponse
+            {
+                Name = book.BookName,
+                Author = book.Author,
+                Category = book.Category,
+                Price = book.Price
+            };
         }
-            
 
         public async Task CreateAsync(BookCreateRequest newBook)
         {
-            var book = await GetAsync(id);
-            
-            if (book is null)
+            var book = new Book
             {
-                return;
-            }
-            await _booksCollection.InsertOneAsync(newBook);
+                BookName = newBook.Name,
+                Author = newBook.Author,
+                Category = newBook.Category,
+                Price = newBook.Price,
+            };
+            await _booksCollection.InsertOneAsync(book);
         }
-           
 
         public async Task UpdateAsync(string id, BookCreateRequest updatedBook)
         {
-            var book = await GetAsync(id);
-
-            if (book is null)
+            var book = new Book
             {
-                return;
-            }
-            
-            await _booksCollection.ReplaceOneAsync(x => x.Id == id, updatedBook);
-
+                // Map BookCreateRequest to Book here
+                Id = id,
+                BookName = updatedBook.Name,
+                Author = updatedBook.Author,
+                Category = updatedBook.Category,
+                Price = updatedBook.Price,
+            };
+            await _booksCollection.ReplaceOneAsync(x => x.Id == id, book);
         }
 
         public async Task RemoveAsync(string id)
         {
-            var book = await GetAsync(id);
-
-            if (book is null)
-            {
-                return;
-            }
-
             await _booksCollection.DeleteOneAsync(x => x.Id == id);
-            
         }
-            
-            
     }
 }
