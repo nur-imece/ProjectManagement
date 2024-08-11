@@ -33,12 +33,12 @@ namespace ProjectManagement.Business.Services
 
         public async Task<AuthResponse> LoginAsync(LoginRequest request)
         {
-            var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, false, lockoutOnFailure: true);
+            var result = await _signInManager.PasswordSignInAsync(request.Username, request.Password, false, lockoutOnFailure: true);
 
             if (result.Succeeded)
             {
                 // JWT token oluşturma kodu buraya eklenecek
-                var token = GenerateJwtToken(request.Email);
+                var token = GenerateJwtToken(request.Username);
                 return new AuthResponse { Token = token };
             }
             return null; // veya uygun bir hata mesajı dönebilirsiniz
