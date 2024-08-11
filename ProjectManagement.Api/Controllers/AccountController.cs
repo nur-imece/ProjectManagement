@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProjectManagement.Model;
+using ProjectManagement.Model.Request;
+using ProjectManagement.Model.Response;
+using ProjectManagement.Business;
 using System.Threading.Tasks;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using AspNetCore.Identity.MongoDbCore.Models;
+
 
 namespace ProjectManagement.Api.Controllers
 {
@@ -14,24 +12,21 @@ namespace ProjectManagement.Api.Controllers
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<MongoIdentityUser<Guid>> _userManager;
-        private readonly SignInManager<MongoIdentityUser<Guid>> _signInManager;
-        private readonly IConfiguration _configuration;
+        private readonly IAccountService _accountService;
 
-        public AccountController(UserManager<MongoIdentityUser<Guid>> userManager, SignInManager<MongoIdentityUser<Guid>> signInManager, IConfiguration configuration)
+        public AccountController(IAccountService accountService)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _configuration = configuration;
+            _accountService = accountService;
         }
+
+        [AllowAnonymous]  // Bu endpoint için kimlik doğrulama gerekmiyor
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = new MongoIdentityUser<Guid> { UserName = model.Username, Email = model.Email };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _accountService.RegisterAsync(request);
 
             if (result.Succeeded)
                 return Ok(new { Message = "User registered successfully" });
@@ -39,29 +34,26 @@ namespace ProjectManagement.Api.Controllers
             return BadRequest(result.Errors);
         }
 
+        [AllowAnonymous]  // Bu endpoint için kimlik doğrulama gerekmiyor
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            // Burada kullanıcıyı doğrulama işlemini yapmanız gerekiyor.
-            // Örnek olarak, her zaman başarılı olan bir doğrulama yapılıyor.
-            
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, model.Username)
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Audience"],
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            return Ok(new { Token = tokenString });
+            var response = await _accountService.LoginAsync(request);
+
+            if (response != null)
+                return Ok(response);
+
+            return Unauthorized(new { Message = "Invalid username or password" });
+        }
+
+        [Authorize]  // Bu endpoint için token doğrulaması zorunlu
+        [HttpGet("protected")]
+        public IActionResult ProtectedEndpoint()
+        {
+            return Ok(new { Message = "This is a protected endpoint, accessible only with a valid token." });
         }
     }
 }
