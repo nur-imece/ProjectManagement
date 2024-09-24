@@ -23,7 +23,7 @@ public class MoviesController : ODataController
     [HttpGet]
     public List<Movie> Get()
     {
-        var result = _movieServices.GetAll();
+        var result =  _movieServices.GetAll();
         return result;
 
     }
