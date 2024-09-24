@@ -24,11 +24,16 @@ configuration
 // Register MongoDB settings
 builder.Services.Configure<MongoDbSetting>(builder.Configuration.GetSection("MongoDbSetting"));
 builder.Services.AddScoped<IMovieServices, MovieServices>();
+builder.Services.AddScoped<IJobServices, JobServices>();
+builder.Services.AddScoped<ICommentServices, CommentServices>();
+
 
 IEdmModel GetEdmModel()
 {
     var model = new ODataConventionModelBuilder();
     model.EntitySet<Movie>("Movies");
+    model.EntitySet<Job>("Jobs");
+    model.EntitySet<Comment>("Comments");
     return model.GetEdmModel();
 }
 

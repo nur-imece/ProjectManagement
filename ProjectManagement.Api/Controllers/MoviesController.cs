@@ -21,13 +21,13 @@ public class MoviesController : ODataController
 
     [EnableQuery]
     [HttpGet]
-    public List<Movie>  Get()
+    public List<Movie> Get()
     {
-         var result = _movieServices.GetAll();
-         return result;
+        var result = _movieServices.GetAll();
+        return result;
 
     }
-    
+
 
     [EnableQuery]
     [HttpPost]
@@ -44,5 +44,5 @@ public class MoviesController : ODataController
             return StatusCode(StatusCodes.Status500InternalServerError, "Error adding movie");
         }
     }
-    
+
 }
