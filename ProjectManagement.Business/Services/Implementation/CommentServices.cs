@@ -1,3 +1,4 @@
+using MongoDB.Driver;
 using ProjectManagement.Data;
 using ProjectManagement.Data.Entity;
 using ProjectManagement.Model.Services.Interface;
@@ -15,12 +16,13 @@ public class CommentServices: ICommentServices
     
     public  List<Comment> GetAll()
     {
-        return _context.Comments.AsQueryable().ToList();
+        return _context.Comments.Find(movie => true).ToList();
+
     }
     
     public async Task AddCommentAsync(Comment comment)
     {
-        _context.Comments.Add(comment);
-        await _context.SaveChangesAsync();
+        await _context.Comments.InsertOneAsync(comment);
+
     }
 }

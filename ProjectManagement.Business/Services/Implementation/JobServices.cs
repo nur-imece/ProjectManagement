@@ -1,3 +1,4 @@
+using MongoDB.Driver;
 using ProjectManagement.Data;
 using ProjectManagement.Data.Entity;
 using ProjectManagement.Model.Services.Interface;
@@ -15,12 +16,12 @@ public class JobServices: IJobServices
     
     public  List<Job> GetAll()
     {
-        return _context.Jobs.AsQueryable().ToList();
+        return _context.Jobs.Find(movie => true).ToList();
     }
     
     public async Task AddJobAsync(Job job)
     {
-        _context.Jobs.Add(job);
-        await _context.SaveChangesAsync();
+        await _context.Jobs.InsertOneAsync(job);
+
     }
 }

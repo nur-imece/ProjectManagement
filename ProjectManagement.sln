@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement.Data", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement.Api", "ProjectManagement.Api\ProjectManagement.Api.csproj", "{33B3BFB1-2F7F-4530-9016-51BAE0757692}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement.Test", "ProjectManagement.Test\ProjectManagement.Test.csproj", "{8FE3AF37-2306-4DC5-B70D-4F4D3688F865}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{33B3BFB1-2F7F-4530-9016-51BAE0757692}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33B3BFB1-2F7F-4530-9016-51BAE0757692}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33B3BFB1-2F7F-4530-9016-51BAE0757692}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FE3AF37-2306-4DC5-B70D-4F4D3688F865}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FE3AF37-2306-4DC5-B70D-4F4D3688F865}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FE3AF37-2306-4DC5-B70D-4F4D3688F865}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FE3AF37-2306-4DC5-B70D-4F4D3688F865}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

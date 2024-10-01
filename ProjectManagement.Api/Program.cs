@@ -1,11 +1,6 @@
-using Microsoft.AspNetCore.OData;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using ProjectManagement.Model.Configuration;
-using Microsoft.OData.Edm;
-using ProjectManagement.Data.Entity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using ProjectManagement.Data;
 using ProjectManagement.Model.Services.Implementation;
@@ -21,81 +16,45 @@ configuration
     .AddJsonFile("appsettings.json", true, true)
     .AddJsonFile($"appsettings.{env}.json", true, true);
 
-// Register MongoDB settings
+// MongoDB Ayarlarını Kayıt Etme
 builder.Services.Configure<MongoDbSetting>(builder.Configuration.GetSection("MongoDbSetting"));
 builder.Services.AddScoped<IMovieServices, MovieServices>();
 builder.Services.AddScoped<IJobServices, JobServices>();
 builder.Services.AddScoped<ICommentServices, CommentServices>();
 
-
-IEdmModel GetEdmModel()
-{
-    var model = new ODataConventionModelBuilder();
-    model.EntitySet<Movie>("Movies");
-    model.EntitySet<Job>("Jobs");
-    model.EntitySet<Comment>("Comments");
-    return model.GetEdmModel();
-}
-
-builder.Services.AddEndpointsApiExplorer();
-
-
-
+// MongoDB Bağlantısı için IMongoClient Kaydı
 builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 {
     var settings = serviceProvider.GetRequiredService<IOptions<MongoDbSetting>>().Value;
     return new MongoClient(settings.ConnectionString);
 });
 
+// MongoDB Veritabanını Ayarlama
 builder.Services.AddSingleton(prov =>
 {
     var client = prov.GetRequiredService<IMongoClient>();
-    return client.GetDatabase( configuration["MongoDbSetting:Database"]);
+    return client.GetDatabase(configuration["MongoDbSetting:Database"]);
 });
 
+// AddDbContext YERİNE MongoDB için özel çözüm kullanıyoruz (Doğrudan IMongoDatabase)
+builder.Services.AddSingleton<MflixDbContext>();
 
-builder.Services.AddDbContext<MflixDbContext>((provider, options) =>
-{
-    var mongoClient = provider.GetRequiredService<IMongoClient>();
-    var database = mongoClient.GetDatabase(configuration["MongoDbSetting:Database"]);
-    options.UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName);
-});
+// Sadece standart API controller yapılandırması
+builder.Services.AddControllers();
 
-
-
-var modelBuilder = new ODataConventionModelBuilder();
-modelBuilder.EntityType<Movie>();
-
-
-builder.Services.AddControllers()
-    .AddOData(options => options
-        .AddRouteComponents("odata", GetEdmModel())
-        .Select()
-        .Filter()
-        .OrderBy()
-        .SetMaxTop(20)
-        .Count()
-        .Expand()
-    );
-
+// Swagger yapılandırması
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-
-    // Set up correct schema generation for OData if needed
 });
-
-builder.Services.AddControllers();
-
-
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Geliştirme ortamında Swagger'ı etkinleştirin
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ODataTutorial v1"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProjectManagement API v1"));
 }
 
 app.UseHttpsRedirection();

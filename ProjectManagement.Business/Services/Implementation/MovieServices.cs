@@ -1,26 +1,27 @@
+using MongoDB.Driver;
 using ProjectManagement.Data;
 using ProjectManagement.Data.Entity;
 using ProjectManagement.Model.Services.Interface;
 
-namespace ProjectManagement.Model.Services.Implementation;
-
-public class MovieServices: IMovieServices
+namespace ProjectManagement.Model.Services.Implementation
 {
-    private readonly MflixDbContext _context;
-    
-    public MovieServices(MflixDbContext context)
+    public class MovieServices: IMovieServices
     {
-        _context = context;
-    }
-    
-    public  List<Movie> GetAll()
-    {
-        return _context.Movies.AsQueryable().ToList();
-    }
-    
-    public async Task AddMovieAsync(Movie movie)
-    {
-        _context.Movies.Add(movie);
-        await _context.SaveChangesAsync();
+        private readonly MflixDbContext _context;
+
+        public MovieServices(MflixDbContext context)
+        {
+            _context = context;
+        }
+
+        public List<Movie> GetAll()
+        {
+            return _context.Movies.Find(movie => true).ToList();
+        }
+
+        public async Task AddMovieAsync(Movie movie)
+        {
+            await _context.Movies.InsertOneAsync(movie);
+        }
     }
 }
